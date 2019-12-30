@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  api:
+    build:
+      context: .
+      args:
+        RUBY_VERSION: 2.7.0
+        BUNDLER_VERSION: 2.1.2
+        RUBYGEMS_VERSION: 3.1.1
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
+    depends_on:
+      - database
+    environment:
+      DATABASE_HOST: database
+    volumes:
+      - vendor:/vendor
+      - .:/app/ibara-api-server:cached
+      - tmp-api:/app/ibara-api-server/tmp
+    working_dir: /app/ibara-api-server
+
+  database:
+    image: mariadb:10.4.11
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+volumes:
+  mariadb-data:
+  vendor:
+  tmp-api:
